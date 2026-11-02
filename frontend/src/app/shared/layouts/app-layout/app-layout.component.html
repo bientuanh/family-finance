@@ -1,0 +1,31 @@
+<main [class]="pageClass()">
+  <app-family-finance-header></app-family-finance-header>
+  <button
+    type="button"
+    class="sidebar-toggle"
+    aria-label="Toggle navigation menu"
+    [attr.aria-expanded]="isSidebarOpen()"
+    (click)="toggleSidebar()"
+  >
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+    </svg>
+  </button>
+
+  @if (isSidebarOpen()) {
+    <button type="button" class="sidebar-backdrop" aria-label="Close navigation menu" (click)="closeSidebar()"></button>
+  }
+
+  <div class="shell">
+    <app-family-finance-sidebar
+      class="sidebar-drawer"
+      [class.sidebar-drawer-open]="isSidebarOpen()"
+      [activeItem]="activeItem()"
+      (navItemSelected)="closeSidebar()"
+    ></app-family-finance-sidebar>
+
+    <div class="page-main">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</main>

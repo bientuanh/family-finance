@@ -1,0 +1,19 @@
+@if (visible()) {
+  <aside class="activity-status-popup" [class.activity-status-popup-error]="type() === 'error'" role="status" aria-live="polite">
+    <span class="activity-status-popup__icon" aria-hidden="true">
+      @if (type() === 'success') {
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"></circle>
+          <path d="m8 12.4 2.6 2.7 5.5-5.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"></circle>
+          <path d="m9 9 6 6m0-6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        </svg>
+      }
+    </span>
+    <p class="activity-status-popup__message">{{ message() }}</p>
+    <button type="button" class="activity-status-popup__close" aria-label="Close notification" (click)="dismiss()">×</button>
+  </aside>
+}

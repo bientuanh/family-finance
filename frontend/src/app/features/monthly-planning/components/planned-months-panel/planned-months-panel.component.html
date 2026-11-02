@@ -1,0 +1,27 @@
+<section aria-labelledby="planned-months-title" class="panel planned-months-panel">
+  <div class="planned-months-heading">
+    <h2 id="planned-months-title">Planned months</h2>
+    <p>Open any month you already created.</p>
+  </div>
+
+  @if (months().length === 0) {
+    <p class="planned-months-empty">No monthly plans yet.</p>
+  } @else {
+    <ul aria-label="Planned months list" class="planned-months-grid">
+      @for (item of months(); track item.year + '-' + item.month) {
+        <li class="planned-month-card">
+          <div class="planned-month-card__content">
+            <span class="planned-month-card__period">{{ formatPeriod(item) }}</span>
+            <span class="planned-month-card__meta">Open your monthly allocation details.</span>
+            <div class="planned-month-card__actions">
+              <app-ui-button [routerLink]="routeLinks.APP_MONTHLY_PLAN_BY_PERIOD(item.year, item.month)">View plan</app-ui-button>
+              <button type="button" class="planned-month-card__delete" [disabled]="isDeleteDisabled()" (click)="onDelete(item)">
+                Delete
+              </button>
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

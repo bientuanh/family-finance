@@ -1,0 +1,31 @@
+<section aria-labelledby="summary-heading" class="summary">
+  <div class="income">
+    <div aria-hidden="true" class="income-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 2.8v18.4M17 6.2c-.9-1-2.4-1.6-4.5-1.6-2.4 0-4 1.1-4 2.8 0 4.6 9.5 1.5 9.5 6.7 0 2-1.9 3.5-4.9 3.5-2 0-3.7-.6-5-1.8"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </div>
+    <div id="summary-heading" class="income-label">Total monthly income</div>
+    <div class="income-value">{{ formatVnd(plan().monthlyIncomeVnd) }}</div>
+    <div class="income-meta">Monthly plan for {{ monthLabel() }}</div>
+  </div>
+
+  <div class="allocation">
+    <div aria-label="100 percent allocated" class="donut" [style.background]="donutBackground()">
+      <div class="donut-label"><strong>100%</strong><span>allocated</span></div>
+    </div>
+    <div aria-label="Jar allocation legend" class="legend">
+      @for (jar of plan().jars; track jar.jarType) {
+        <div class="legend-item">
+          <span [class]="'legend-name ' + legendClass(jar.jarType)">{{ jar.name }}</span>
+          <span class="legend-rate">{{ jar.percentage }}%</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>

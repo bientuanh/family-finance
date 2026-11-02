@@ -1,0 +1,39 @@
+<header class="page-header">
+  <a [routerLink]="routeLinks.LANDING" aria-label="Family Finance planning" class="brand">
+    <app-home-logo></app-home-logo>
+  </a>
+
+  <span class="header-spacer"></span>
+
+  <div class="account-menu">
+    <button
+      type="button"
+      aria-haspopup="menu"
+      class="account-trigger"
+      [attr.aria-expanded]="isAccountMenuOpen()"
+      aria-controls="account-menu-panel"
+      (click)="toggleAccountMenu()">
+      <span class="user-name">{{ familyName() }}</span>
+      <span aria-hidden="true" class="avatar">{{ familyInitials() }}</span>
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="account-chevron">
+        <path
+          d="m7 9 5 5 5-5"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+    </button>
+
+    @if (isAccountMenuOpen()) {
+      <div id="account-menu-panel" class="account-dropdown" role="menu" aria-label="Account menu">
+        <a [routerLink]="routeLinks.APP_ACCOUNT" class="account-dropdown__item" role="menuitem" (click)="closeAccountMenu()">
+          Family account
+        </a>
+        <button type="button" class="account-dropdown__item account-dropdown__item-signout" role="menuitem" (click)="signOut()">
+          Sign out
+        </button>
+      </div>
+    }
+  </div>
+</header>

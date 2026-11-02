@@ -1,0 +1,10 @@
+@if (variant() === 'status') {
+  <span [class]="'status-badge ' + status()">
+    <span class="status-dot" aria-hidden="true"></span>
+    <span>{{ text() }}</span>
+  </span>
+} @else if (variant() === 'skills') {
+  <span class="badge badge-skills">{{ text() }}</span>
+} @else {
+  <span class="badge badge-type">{{ text() }}</span>
+}

@@ -1,0 +1,59 @@
+<app-app-layout [activeItem]="'expense'">
+  <div class="breadcrumbs">
+    <a [routerLink]="routeLinks.APP_MONTHLY_PLAN_BY_PERIOD(selectedPlanYear, selectedPlanMonth)">Monthly plan</a>
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span>Add expense</span>
+  </div>
+
+  <section class="intro">
+    <div aria-hidden="true" class="intro-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 2.8v18.4M17 6.2c-.9-1-2.4-1.6-4.5-1.6-2.4 0-4 1.1-4 2.8 0 4.6 9.5 1.5 9.5 6.7 0 2-1.9 3.5-4.9 3.5-2 0-3.7-.6-5-1.8"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </div>
+    <div>
+      <h1>Add an expense</h1>
+      <p class="intro-copy">Record one expense and assign it to the selected monthly jar.</p>
+    </div>
+  </section>
+
+  @if (pageErrorMessage) {
+    <section class="state-panel">
+      <p>{{ pageErrorMessage }}</p>
+    </section>
+  } @else if (showMissingPlanState) {
+    <section class="state-panel">
+      <h2>Create a monthly plan before adding an expense</h2>
+      <p>No monthly plan exists for {{ monthLabel() }}. Create that month first to continue.</p>
+      <app-ui-button [routerLink]="routeLinks.APP_MONTHLY_PLANNING" variant="secondary">
+        Go to monthly planning
+      </app-ui-button>
+    </section>
+  } @else {
+    <div class="expense-grid">
+      <app-expense-details-form
+        [form]="form"
+        [jars]="planJars"
+        [isLoadingPlan]="isLoadingPlan"
+        [isSubmitting]="isSubmitting"
+        [fieldErrors]="fieldErrors"
+        [submitErrorMessage]="submitErrorMessage"
+        (expenseDateChanged)="onExpenseDateChanged($event)"
+        (saveExpense)="submitExpense()"
+      ></app-expense-details-form>
+
+      <app-selected-jar-summary
+        [selectedJar]="selectedJar()"
+        [jarSummary]="jarSummary"
+        [successMessage]="successMessage"
+      ></app-selected-jar-summary>
+    </div>
+  }
+</app-app-layout>

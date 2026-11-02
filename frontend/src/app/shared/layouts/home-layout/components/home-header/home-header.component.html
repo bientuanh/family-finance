@@ -1,0 +1,15 @@
+<header class="home-header">
+  <div class="home-container home-header__inner">
+    <a [routerLink]="routeLinks.LANDING" class="home-header__brand" aria-label="Home">
+      <app-home-logo></app-home-logo>
+    </a>
+
+    <nav class="home-header__nav" aria-label="Home sections">
+      <a href="#features">Features</a>
+      <a href="#faqs">FAQs</a>
+      <a href="#about-me">About me</a>
+    </nav>
+
+    <app-ui-button [routerLink]="startPlanningRouteLink()">Start planning</app-ui-button>
+  </div>
+</header>

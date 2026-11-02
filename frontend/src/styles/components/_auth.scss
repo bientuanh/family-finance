@@ -1,0 +1,39 @@
+.auth-page {
+  min-height: calc(100vh - 9rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  width: min(100%, 28rem);
+  background: #fff;
+  border: 0.0625rem solid var(--f1-grey);
+  border-radius: var(--app-radius-md);
+  padding: 1.5rem;
+}
+
+.auth-card h1 {
+  margin: 0;
+  color: var(--f1-navy);
+}
+
+.auth-subtitle {
+  margin: 0.5rem 0 1rem;
+  color: var(--f1-slate);
+}
+
+.auth-card .btn {
+  width: 100%;
+}
+
+.auth-switch {
+  margin: 1rem 0 0;
+  color: var(--f1-slate);
+  font-size: var(--f1-small);
+}
+
+.auth-switch a {
+  color: var(--primary-blue);
+}

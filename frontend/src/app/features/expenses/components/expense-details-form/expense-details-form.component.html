@@ -1,0 +1,78 @@
+<section class="panel expense-form-panel" aria-labelledby="expense-details-heading">
+  <h2 id="expense-details-heading">Expense details</h2>
+
+  <form [formGroup]="form()" (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="expenseDate">Expense date</label>
+      <input
+        id="expenseDate"
+        type="date"
+        formControlName="expenseDate"
+        [attr.aria-invalid]="fieldError('expenseDate') ? 'true' : 'false'"
+        (change)="onDateChanged(dateInput.value)"
+        #dateInput
+      />
+      @if (fieldError('expenseDate')) {
+        <small class="field-error">{{ fieldError('expenseDate') }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="jarType">Jar</label>
+      <select
+        id="jarType"
+        formControlName="jarType"
+        [disabled]="isLoadingPlan() || jars().length === 0"
+        [attr.aria-invalid]="fieldError('jarType') ? 'true' : 'false'"
+      >
+        <option value="">Select a jar</option>
+        @for (jar of jars(); track jar.jarType) {
+          <option [value]="jar.jarType">{{ jar.name }} ({{ jar.percentage }}%)</option>
+        }
+      </select>
+      @if (fieldError('jarType')) {
+        <small class="field-error">{{ fieldError('jarType') }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="amountVnd">Amount (VND)</label>
+      <div class="control">
+        <input
+          id="amountVnd"
+          type="text"
+          inputmode="numeric"
+          formControlName="amountVnd"
+          placeholder="1250000"
+          [attr.aria-invalid]="fieldError('amountVnd') ? 'true' : 'false'"
+        />
+        <span class="currency-suffix">VND</span>
+      </div>
+      @if (fieldError('amountVnd')) {
+        <small class="field-error">{{ fieldError('amountVnd') }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        rows="4"
+        formControlName="description"
+        placeholder="Weekly groceries"
+        [attr.aria-invalid]="fieldError('description') ? 'true' : 'false'"
+      ></textarea>
+      @if (fieldError('description')) {
+        <small class="field-error">{{ fieldError('description') }}</small>
+      }
+    </div>
+
+    @if (submitErrorMessage()) {
+      <p class="submit-error">{{ submitErrorMessage() }}</p>
+    }
+
+    <app-ui-button type="submit" [disabled]="isLoadingPlan() || isSubmitting()">
+      {{ isSubmitting() ? 'Saving...' : 'Save expense' }}
+    </app-ui-button>
+  </form>
+</section>

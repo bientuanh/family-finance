@@ -1,0 +1,26 @@
+<a [routerLink]="routeLinks.APP_MONTHLY_PLANNING" class="back-link"><span aria-hidden="true">‹</span> Back to monthly planning </a>
+
+<section role="alert" class="state-panel error-state">
+  <label for="error-plan-month" class="month-label">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
+      <path d="M7.5 3v4M16.5 3v4M4 9.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+    </svg>
+    <select id="error-plan-month" [value]="selectedMonth()">
+      @for (month of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; track month) {
+        <option [value]="month">
+          {{ month === 1 ? 'January' : month === 2 ? 'February' : month === 3 ? 'March' : month === 4 ? 'April' : month === 5 ? 'May' : month === 6 ? 'June' : month === 7 ? 'July' : month === 8 ? 'August' : month === 9 ? 'September' : month === 10 ? 'October' : month === 11 ? 'November' : 'December' }}
+          {{ selectedYear() }}
+        </option>
+      }
+    </select>
+  </label>
+
+  <div aria-hidden="true" class="state-icon">!</div>
+  <h1>Monthly plan unavailable</h1>
+  <p>There is no monthly plan for this period yet.</p>
+
+  <div class="state-actions">
+    <app-ui-button [routerLink]="routeLinks.APP_MONTHLY_PLANNING">Create a plan</app-ui-button>
+  </div>
+</section>

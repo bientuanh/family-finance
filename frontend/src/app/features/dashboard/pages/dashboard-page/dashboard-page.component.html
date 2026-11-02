@@ -1,0 +1,180 @@
+<app-app-layout [activeItem]="'home'">
+  <section class="intro">
+    <div>
+      <h1>Monthly dashboard</h1>
+      <p class="intro-copy">Review monthly income, spending, and jar performance.</p>
+    </div>
+  </section>
+
+  <section class="panel dashboard-filter-panel">
+    <label for="dashboardPeriod">Month</label>
+    <div class="dashboard-filter-row">
+      <input
+        id="dashboardPeriod"
+        type="month"
+        [formControl]="form.controls.period"
+        (change)="onPeriodChanged(periodInput.value)"
+        #periodInput
+      />
+      <app-ui-button variant="secondary" type="button" (buttonClick)="retryLoad()">Refresh</app-ui-button>
+    </div>
+  </section>
+
+  @if (isLoading) {
+    <section class="state-panel"><p>Loading dashboard...</p></section>
+  } @else if (showMissingPlanState) {
+    <section class="state-panel">
+      <h2>No monthly plan found</h2>
+      <p>Create a monthly plan for this month to see dashboard performance.</p>
+      <app-ui-button [routerLink]="routeLinks.APP_MONTHLY_PLANNING">Go to monthly planning</app-ui-button>
+    </section>
+  } @else if (pageErrorMessage) {
+    <section class="state-panel">
+      <h2>Unable to load dashboard</h2>
+      <p>{{ pageErrorMessage }}</p>
+      <app-ui-button variant="secondary" type="button" (buttonClick)="retryLoad()">Retry</app-ui-button>
+    </section>
+  } @else if (dashboard; as data) {
+    <section class="dashboard-highlights-grid">
+      <article class="panel dashboard-highlight-card">
+        <header class="dashboard-highlight-header">
+          <div>
+            <p class="dashboard-highlight-eyebrow">Monthly plan</p>
+            <h2>Seven jar allocation</h2>
+          </div>
+          <a [routerLink]="routeLinks.APP_MONTHLY_PLAN_BY_PERIOD(data.year, data.month)">View plan</a>
+        </header>
+
+        <div class="dashboard-allocation-content">
+          <div class="dashboard-donut" [style.background]="allocationDonutBackground(data.jars)" aria-hidden="true">
+            <div class="dashboard-donut-label">
+              <strong>100%</strong>
+              <span>allocated</span>
+            </div>
+          </div>
+
+          <ul class="dashboard-allocation-list">
+            @for (jar of data.jars; track jar.jarType) {
+              <li>
+                <span class="dashboard-allocation-name">
+                  <span [class]="'dashboard-allocation-dot ' + jarCardClass(jar.jarType)" aria-hidden="true"></span>
+                  <span>{{ jar.jarName }}</span>
+                </span>
+                <strong>{{ jar.allocationPercentage }}%</strong>
+              </li>
+            }
+          </ul>
+        </div>
+      </article>
+
+      <article class="panel dashboard-highlight-card">
+        <header class="dashboard-highlight-header">
+          <div>
+            <p class="dashboard-highlight-eyebrow">Latest updates</p>
+            <h2>Recent activity</h2>
+          </div>
+          <a [routerLink]="routeLinks.APP_EXPENSES_NEW">See all</a>
+        </header>
+
+        @if (recentActivities(data.jars); as activities) {
+          @if (activities.length === 0) {
+            <p class="dashboard-empty-activity">No spending activity for this month yet.</p>
+          } @else {
+            <ul class="dashboard-activity-list">
+              @for (activity of activities; track activity.title + activity.jarName) {
+                <li>
+                  <span [class]="'dashboard-activity-avatar ' + activity.jarClass">{{ activity.initial }}</span>
+                  <span class="dashboard-activity-content">
+                    <strong>{{ activity.title }}</strong>
+                    <small>{{ activity.jarName }} jar</small>
+                  </span>
+                  <strong class="dashboard-activity-amount">{{ formatVnd(activity.spentVnd) }}</strong>
+                </li>
+              }
+            </ul>
+          }
+        }
+      </article>
+    </section>
+
+    <section class="dashboard-overview panel">
+      <header>
+        <h2>{{ monthLabel() }}</h2>
+        <p>Currency: {{ data.currency }}</p>
+      </header>
+
+      <div class="dashboard-metrics-grid">
+        <article class="metric-card">
+          <h3>Monthly income</h3>
+          <p>{{ formatVnd(data.monthlyIncomeVnd) }}</p>
+        </article>
+        <article class="metric-card">
+          <h3>Total spent</h3>
+          <p>{{ formatVnd(data.totalSpentVnd) }}</p>
+        </article>
+        <article class="metric-card">
+          <h3>Remaining balance</h3>
+          <p [class.negative]="data.remainingVnd.startsWith('-')">{{ formatVnd(data.remainingVnd) }}</p>
+        </article>
+        <article class="metric-card">
+          <h3>Overall progress</h3>
+          <p>{{ formatProgress(data.overallProgressPercentage) }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="dashboard-jars panel" aria-label="Jar performance">
+      <h2>Jar performance</h2>
+      <div class="dashboard-jar-grid">
+        @for (jar of data.jars; track jar.jarType) {
+          <article [class]="'dashboard-jar-card ' + jarCardClass(jar.jarType)">
+            <div class="dashboard-jar-head">
+              <h3>{{ jar.jarName }}</h3>
+              <span>{{ jar.allocationPercentage }}%</span>
+            </div>
+
+            <div
+              class="dashboard-meter"
+              [attr.aria-label]="
+                jar.jarName +
+                ': spent ' +
+                formatVnd(jar.spentVnd) +
+                ' of budget ' +
+                formatVnd(jar.budgetVnd) +
+                ', progress ' +
+                formatProgress(jar.progressPercentage)
+              "
+              role="img"
+            >
+              <span [style.width.%]="meterWidth(jar.progressPercentage)" [class.over-budget]="isOverBudget(jar)"></span>
+            </div>
+
+            <dl class="dashboard-jar-values">
+              <div>
+                <dt>Budget</dt>
+                <dd>{{ formatVnd(jar.budgetVnd) }}</dd>
+              </div>
+              <div>
+                <dt>Spent</dt>
+                <dd>{{ formatVnd(jar.spentVnd) }}</dd>
+              </div>
+              <div>
+                <dt>Remaining</dt>
+                <dd [class.negative]="jar.remainingVnd.startsWith('-')">{{ formatVnd(jar.remainingVnd) }}</dd>
+              </div>
+              <div>
+                <dt>Progress</dt>
+                <dd>
+                  {{ formatProgress(jar.progressPercentage) }}
+                  @if (isOverBudget(jar)) {
+                    <span class="over-budget-tag">Over budget</span>
+                  }
+                </dd>
+              </div>
+            </dl>
+          </article>
+        }
+      </div>
+    </section>
+  }
+</app-app-layout>

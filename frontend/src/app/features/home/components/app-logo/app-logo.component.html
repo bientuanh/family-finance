@@ -1,0 +1,18 @@
+<div class="home-logo" [class.home-logo--compact]="compact()">
+  <span class="home-logo__mark" aria-hidden="true">
+    <svg viewBox="0 0 64 64" fill="none">
+      <rect x="8" y="8" width="48" height="48" rx="14" fill="currentColor"></rect>
+      <path d="M20 38h24M20 30h24M20 22h14" stroke="white" stroke-width="4" stroke-linecap="round"></path>
+      <circle cx="43" cy="42" r="7" fill="white"></circle>
+      <path d="M43 38v4" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+      <path d="M41 42h4" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+    </svg>
+  </span>
+
+  @if (!compact()) {
+    <span class="home-logo__text">
+      <strong>Family Finance</strong>
+      <small>Budget Planner</small>
+    </span>
+  }
+</div>

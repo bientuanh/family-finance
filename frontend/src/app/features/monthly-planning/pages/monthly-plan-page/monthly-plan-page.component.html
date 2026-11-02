@@ -1,0 +1,40 @@
+<app-app-layout [activeItem]="'planning'">
+  @if (isLoading) {
+    <section class="monthly-plan-shell loading">
+      <p>Loading monthly plan...</p>
+    </section>
+  } @else if (showMissingState) {
+    <app-monthly-plan-unavailable-state [selectedYear]="year" [selectedMonth]="month"></app-monthly-plan-unavailable-state>
+  } @else if (pageErrorMessage) {
+    <section class="monthly-plan-shell error">
+      <h2>Unable to load this month</h2>
+      <p>{{ pageErrorMessage }}</p>
+      <app-ui-button variant="secondary" size="md" (buttonClick)="retryLoadPlan()">Retry</app-ui-button>
+    </section>
+  } @else if (plan) {
+    <div class="monthly-plan-shell">
+      <section class="monthly-plan-header">
+        <div>
+          <h1>Income Allocation</h1>
+          <p>{{ monthLabel() }}</p>
+        </div>
+        <div class="monthly-plan-actions">
+          <label class="month-picker">
+            <span>Select month</span>
+            <select [value]="selectedMonth" (change)="changeMonth(monthSelect.value)" #monthSelect>
+              @for (monthName of monthOptions; track $index) {
+                <option [value]="$index + 1">{{ monthName }}</option>
+              }
+            </select>
+          </label>
+          <app-ui-button variant="secondary" size="md" [routerLink]="routeLinks.APP_MONTHLY_PLANNING">
+            Plan another month
+          </app-ui-button>
+        </div>
+      </section>
+
+      <app-allocation-summary [plan]="plan" [monthLabel]="monthLabel()"></app-allocation-summary>
+      <app-jar-allocation-grid [jars]="plan.jars"></app-jar-allocation-grid>
+    </div>
+  }
+</app-app-layout>

@@ -1,0 +1,17 @@
+<ng-template #buttonContent>
+  <ng-content></ng-content>
+</ng-template>
+
+@if (routerLink(); as link) {
+  <a [routerLink]="link" [class]="buttonClass()" [attr.aria-label]="ariaLabel()">
+    <ng-container [ngTemplateOutlet]="buttonContent"></ng-container>
+  </a>
+} @else if (href(); as externalHref) {
+  <a [href]="externalHref" [class]="buttonClass()" [attr.aria-label]="ariaLabel()">
+    <ng-container [ngTemplateOutlet]="buttonContent"></ng-container>
+  </a>
+} @else {
+  <button [type]="type()" [disabled]="disabled()" [class]="buttonClass()" [attr.aria-label]="ariaLabel()">
+    <ng-container [ngTemplateOutlet]="buttonContent"></ng-container>
+  </button>
+}

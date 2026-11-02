@@ -1,0 +1,35 @@
+<aside class="panel selected-jar-panel" aria-live="polite">
+  <h2>Selected jar</h2>
+
+  @if (selectedJar(); as jar) {
+    <p class="selected-jar-name">{{ jar.name }}</p>
+    <p class="selected-jar-rate">{{ jar.percentage }}% allocation</p>
+  } @else {
+    <p class="selected-jar-empty">Select a jar to preview its allocation.</p>
+  }
+
+  @if (jarSummary(); as summary) {
+    <dl class="jar-summary-list">
+      <div>
+        <dt>Budget</dt>
+        <dd>{{ formatVnd(summary.budgetVnd) }}</dd>
+      </div>
+      <div>
+        <dt>Spent</dt>
+        <dd>{{ formatVnd(summary.spentVnd) }}</dd>
+      </div>
+      <div>
+        <dt>Remaining</dt>
+        <dd [class.negative]="summary.remainingVnd.startsWith('-')">
+          {{ formatVnd(summary.remainingVnd) }}
+        </dd>
+      </div>
+    </dl>
+  } @else {
+    <p class="selected-jar-note">After saving, spending totals are refreshed from backend data.</p>
+  }
+
+  @if (successMessage()) {
+    <p class="success-note">{{ successMessage() }}</p>
+  }
+</aside>

@@ -1,0 +1,169 @@
+<app-app-layout [activeItem]="'planning'" [pageClass]="'planning-page'">
+  <nav aria-label="Breadcrumb" class="breadcrumbs">
+    <a [routerLink]="routeLinks.APP_MONTHLY_PLANNING" aria-label="Home">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1V10Z"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linejoin="round"
+        ></path>
+      </svg>
+    </a>
+    <span aria-hidden="true" class="breadcrumb-separator">/</span>
+    <a [routerLink]="routeLinks.APP_MONTHLY_PLANNING">Monthly planning</a>
+    <span aria-hidden="true" class="breadcrumb-separator">/</span>
+    <span aria-current="page">Create monthly plan</span>
+  </nav>
+
+  <section aria-labelledby="page-title" class="intro">
+    <div aria-hidden="true" class="intro-icon">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 3 4.5 6v5.4c0 4.5 3.2 7.8 7.5 9.6 4.3-1.8 7.5-5.1 7.5-9.6V6L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+        <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 id="page-title">Create your monthly budget</h1>
+      <p class="intro-copy">Set your income for a month and we will prepare your seven budgeting jars.</p>
+    </div>
+  </section>
+
+  <div class="content-grid">
+    <section aria-labelledby="details-title" class="panel details-panel">
+      <h2 id="details-title">Plan details</h2>
+
+      <form novalidate [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label for="period"> Month <span class="required">*</span></label>
+          <div class="control">
+            <span aria-hidden="true" class="control-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="3.5" y="5" width="17" height="15.5" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
+                <path d="M7.5 3v4M16.5 3v4M4 9.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              </svg>
+            </span>
+            <input id="period" type="month" formControlName="period" [attr.aria-invalid]="hasPeriodError()" [attr.aria-describedby]="hasPeriodError() ? 'period-error' : null" />
+          </div>
+          @if (hasPeriodError()) {
+            <p id="period-error" class="field-error">Select a month for this plan.</p>
+          }
+        </div>
+
+        <div class="field">
+          <label for="monthly-income"> Monthly income <span class="required">*</span></label>
+          <div class="control">
+            <span aria-hidden="true" class="control-icon">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2.8v18.4M17 6.2c-.9-1-2.4-1.6-4.5-1.6-2.4 0-4 1.1-4 2.8 0 4.6 9.5 1.5 9.5 6.7 0 2-1.9 3.5-4.9 3.5-2 0-3.7-.6-5-1.8"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                ></path>
+              </svg>
+            </span>
+            <input
+              id="monthly-income"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              formControlName="monthlyIncomeVnd"
+              placeholder="30,000,000"
+              [attr.aria-invalid]="hasIncomeError()"
+              [attr.aria-describedby]="hasIncomeError() ? 'income-error' : null"
+            />
+            <span class="currency-suffix">VND</span>
+          </div>
+          @if (hasIncomeError()) {
+            <p id="income-error" class="field-error">Income must be a positive whole-VND amount.</p>
+          }
+        </div>
+
+        <hr class="form-divider" />
+
+        @if (submitErrorMessage) {
+          <p class="field-error">{{ submitErrorMessage }}</p>
+        }
+        @if (pageErrorMessage) {
+          <p class="field-error">{{ pageErrorMessage }}</p>
+        }
+        <output aria-live="polite" class="status-message">{{ statusMessage }}</output>
+        <div class="form-actions">
+          <app-ui-button [type]="'submit'" [disabled]="isLoadingDefaults || isSubmitting">Create monthly plan</app-ui-button>
+          <p class="one-plan-note">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"></circle>
+              <path d="M12 11v5m0-8h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+            <span>One plan can be created per month.</span>
+          </p>
+        </div>
+      </form>
+    </section>
+
+    @if (isLoadingDefaults) {
+      <section aria-label="Loading default jars" class="panel allocation-panel">
+        <p class="status-message">Loading default jars...</p>
+      </section>
+    } @else if (defaultJars.length > 0) {
+      <app-default-allocation-panel [jars]="defaultJars"></app-default-allocation-panel>
+    }
+  </div>
+
+  <hr class="section-divider" />
+
+  @if (isLoadingPlannedMonths) {
+    <section aria-label="Loading planned months" class="panel planned-months-panel">
+      <p class="status-message">Loading planned months...</p>
+    </section>
+  } @else if (plannedMonthsErrorMessage) {
+    <section aria-label="Unable to load planned months" class="panel planned-months-panel">
+      <p class="field-error">{{ plannedMonthsErrorMessage }}</p>
+    </section>
+  } @else {
+    <app-planned-months-panel
+      [months]="plannedMonths"
+      [isDeleteDisabled]="isDeletingPlan"
+      (deleteRequested)="requestDeletePlannedMonth($event)"></app-planned-months-panel>
+  }
+
+  <dialog
+    #deletePlanDialog
+    class="app-dialog app-dialog-small delete-plan-dialog"
+    aria-labelledby="delete-plan-title"
+    aria-describedby="delete-plan-description"
+    (cancel)="handleDeleteDialogCancel($event)">
+    @if (monthPendingDeletion) {
+      <div class="app-dialog-container">
+        <div class="app-dialog-content">
+          <h2 id="delete-plan-title" class="app-dialog-title">Delete monthly plan?</h2>
+          <p id="delete-plan-description" class="app-dialog-description">
+            This will permanently delete the plan for {{ pendingDeletionLabel() }}.
+          </p>
+          @if (deletePlanErrorMessage) {
+            <p class="field-error">{{ deletePlanErrorMessage }}</p>
+          }
+        </div>
+        <div class="app-dialog-actions">
+          <button type="button" class="app-dialog-button app-dialog-button-secondary" [disabled]="isDeletingPlan" (click)="cancelDeletePlannedMonth()">
+            Cancel
+          </button>
+          <button type="button" class="app-dialog-button app-dialog-button-danger" [disabled]="isDeletingPlan" (click)="confirmDeletePlannedMonth()">
+            @if (isDeletingPlan) {
+              Deleting...
+            } @else {
+              Okay
+            }
+          </button>
+        </div>
+      </div>
+    }
+  </dialog>
+
+  <app-activity-status-popup
+    [visible]="isActivityPopupVisible"
+    [type]="activityPopupType"
+    [message]="activityPopupMessage"
+    (dismissed)="dismissActivityPopup()"></app-activity-status-popup>
+</app-app-layout>

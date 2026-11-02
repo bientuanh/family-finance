@@ -1,0 +1,25 @@
+<app-app-layout [activeItem]="'home'">
+  <section class="intro">
+    <div>
+      <h1>Family account</h1>
+      <p class="intro-copy">Thông tin tài khoản gia đình đang đăng nhập.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <dl class="account-details">
+      <div>
+        <dt>Family name</dt>
+        <dd>{{ familyName() }}</dd>
+      </div>
+      <div>
+        <dt>Email</dt>
+        <dd>{{ email() }}</dd>
+      </div>
+      <div>
+        <dt>User ID</dt>
+        <dd>{{ userId() }}</dd>
+      </div>
+    </dl>
+  </section>
+</app-app-layout>

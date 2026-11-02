@@ -4,10 +4,11 @@ import { APP_ROUTE_LINKS } from '../../../../constants/app-routes';
 import { AuthSessionService } from '../../../auth/services/auth-session.service';
 import { UiBadgeComponent } from '../../../../shared/components/ui-badge/ui-badge.component';
 import { UiButtonComponent } from '../../../../shared/components/ui-button/ui-button.component';
+import { RevealOnScrollDirective } from '../../../../shared/directives/reveal-on-scroll.directive';
 
 @Component({
   selector: 'app-hero-banner-section',
-  imports: [UiBadgeComponent, UiButtonComponent],
+  imports: [UiBadgeComponent, UiButtonComponent, RevealOnScrollDirective],
   templateUrl: './hero-banner-section.component.html'
 })
 export class HeroBannerSectionComponent {

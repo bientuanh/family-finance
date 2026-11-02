@@ -5,6 +5,19 @@
   scroll-behavior: smooth;
 }
 
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 520ms ease,
+    transform 520ms ease;
+}
+
+.reveal-on-scroll-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .home-container {
   width: min(100% - 2rem, 68rem);
   margin-inline: auto;
@@ -369,5 +382,13 @@
 
   .home-hero__image {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

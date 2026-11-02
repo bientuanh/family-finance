@@ -1,7 +1,7 @@
 <section class="home-hero">
   <div class="home-container">
     <div class="home-hero__inner">
-      <div class="home-hero__content">
+      <div class="home-hero__content" appRevealOnScroll [appRevealOnScrollDelay]="80">
         <app-ui-badge [text]="'Simple monthly planning for families'"></app-ui-badge>
         <h1>Plan your money with confidence, one month at a time.</h1>
         <p>
@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="home-hero__image" aria-hidden="true">
+      <div class="home-hero__image" aria-hidden="true" appRevealOnScroll [appRevealOnScrollDelay]="180">
         <svg viewBox="0 0 420 300" fill="none">
           <rect x="20" y="30" width="380" height="240" rx="20" fill="#ffffff" stroke="#d3deec" stroke-width="2"></rect>
           <rect x="52" y="64" width="170" height="24" rx="8" fill="#eef3fb"></rect>

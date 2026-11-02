@@ -5,6 +5,7 @@ import { FeaturesSectionComponent } from '../../sections/features-section/featur
 import { HeroBannerSectionComponent } from '../../sections/hero-banner-section/hero-banner-section.component';
 import { HomeLayoutComponent } from '../../../../shared/layouts/home-layout/home-layout.component';
 import { CalloutSectionComponent } from '../../sections/callout-section/callout-section.component';
+import { RevealOnScrollDirective } from '../../../../shared/directives/reveal-on-scroll.directive';
 
 @Component({
   selector: 'app-home-page',
@@ -14,7 +15,8 @@ import { CalloutSectionComponent } from '../../sections/callout-section/callout-
     FeaturesSectionComponent,
     CalloutSectionComponent,
     FaqSectionComponent,
-    AboutMeSectionComponent
+    AboutMeSectionComponent,
+    RevealOnScrollDirective
   ],
   templateUrl: './home-page.component.html'
 })

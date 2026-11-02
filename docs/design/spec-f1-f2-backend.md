@@ -105,12 +105,17 @@ Use C# `long` for amounts, `int` for year/month/percentage, and an enum converte
 ## 6. Shared API Contract
 
 Base path: `/api/v1/budget-plans`. JSON names are camelCase.
+All plan-scoped endpoints require request header `X-User-Id` with the signed-in user id.
 
 ### API-F1F2-00 - List planned months
 
 `GET /api/v1/budget-plans`
 
-No parameters or body. Returns `200 OK`:
+Required header:
+
+`X-User-Id: <signed-in user id>`
+
+Returns `200 OK` with months that belong to the signed-in user:
 
 ```json
 {
@@ -157,13 +162,19 @@ Request body:
 
 `year` is 1-9999; `month` is 1-12; `monthlyIncomeVnd` is required ASCII digits, parseable as positive signed 64-bit integer. Do not accept `jarType`, `percentage`, or `budgetVnd` from the client.
 
+Required header:
+
+`X-User-Id: <signed-in user id>`
+
 Success is `201 Created` with `BudgetPlanResponse` and `Location: /api/v1/budget-plans/{year}/{month}`. No rows are committed on failure.
+Uniqueness is per user and month: one plan per `(userId, year, month)`.
 
 ### API-F1F2-03 - Get monthly plan and allocation
 
 `GET /api/v1/budget-plans/{year:int}/{month:int}`
 
 This is the shared read endpoint for F1's post-create view and F2's allocation page. It has no query parameters or body. Valid path values return `200 OK` with `BudgetPlanResponse`; a valid period with no plan returns `404 MONTHLY_PLAN_NOT_FOUND`.
+The endpoint resolves plans only for the signed-in user from `X-User-Id`.
 
 Example success response:
 
@@ -198,6 +209,7 @@ Deletes the monthly plan for the period, including its allocations and expenses 
 - `204 No Content` when deleted.
 - `400 VALIDATION_ERROR` for invalid `year`/`month`.
 - `404 MONTHLY_PLAN_NOT_FOUND` when no plan exists for a valid period.
+- `401 AUTH_REQUIRED` when `X-User-Id` is missing/invalid.
 
 ## 7. DTO Contract
 
@@ -232,6 +244,7 @@ Use this envelope for all expected errors:
 
 | HTTP | Code | Meaning |
 |---:|---|---|
+| 401 | `AUTH_REQUIRED` | Sign-in context is missing or invalid (`X-User-Id`) |
 | 400 | `VALIDATION_ERROR` | Invalid year/month, missing or malformed income, or invalid persisted request shape |
 | 404 | `MONTHLY_PLAN_NOT_FOUND` | No plan exists for a valid period |
 | 409 | `MONTHLY_PLAN_ALREADY_EXISTS` | Unique year/month already exists, including a concurrent insert race |

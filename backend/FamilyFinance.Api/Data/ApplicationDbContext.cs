@@ -17,9 +17,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<BudgetPlan>(entity =>
         {
             entity.HasKey(plan => plan.Id);
-            entity.HasIndex(plan => new { plan.Year, plan.Month }).IsUnique();
+            entity.HasIndex(plan => new { plan.UserAccountId, plan.Year, plan.Month }).IsUnique();
             entity.HasMany(plan => plan.Allocations).WithOne(allocation => allocation.BudgetPlan)
                 .HasForeignKey(allocation => allocation.BudgetPlanId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(plan => plan.UserAccount).WithMany(user => user.BudgetPlans)
+                .HasForeignKey(plan => plan.UserAccountId).OnDelete(DeleteBehavior.Restrict);
             entity.Property(plan => plan.MonthlyIncomeVnd).HasColumnType("INTEGER");
             entity.Property(plan => plan.CreatedAtUtc).HasColumnType("TEXT");
             entity.ToTable(table =>

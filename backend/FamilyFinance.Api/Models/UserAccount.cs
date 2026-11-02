@@ -9,4 +9,5 @@ public class UserAccount
     public byte[] PasswordSalt { get; set; } = [];
     public byte[] PasswordHash { get; set; } = [];
     public DateTime CreatedAtUtc { get; set; }
+    public List<BudgetPlan> BudgetPlans { get; set; } = [];
 }

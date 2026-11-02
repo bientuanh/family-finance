@@ -66,12 +66,15 @@ namespace FamilyFinance.Api.Migrations
                     b.Property<long>("MonthlyIncomeVnd")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("UserAccountId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Year", "Month")
+                    b.HasIndex("UserAccountId", "Year", "Month")
                         .IsUnique();
 
                     b.ToTable("BudgetPlans", t =>
@@ -176,6 +179,16 @@ namespace FamilyFinance.Api.Migrations
                     b.Navigation("BudgetPlan");
                 });
 
+            modelBuilder.Entity("FamilyFinance.Api.Models.BudgetPlan", b =>
+                {
+                    b.HasOne("FamilyFinance.Api.Models.UserAccount", "UserAccount")
+                        .WithMany("BudgetPlans")
+                        .HasForeignKey("UserAccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("UserAccount");
+                });
+
             modelBuilder.Entity("FamilyFinance.Api.Models.Expense", b =>
                 {
                     b.HasOne("FamilyFinance.Api.Models.BudgetAllocation", "BudgetAllocation")
@@ -195,6 +208,11 @@ namespace FamilyFinance.Api.Migrations
             modelBuilder.Entity("FamilyFinance.Api.Models.BudgetPlan", b =>
                 {
                     b.Navigation("Allocations");
+                });
+
+            modelBuilder.Entity("FamilyFinance.Api.Models.UserAccount", b =>
+                {
+                    b.Navigation("BudgetPlans");
                 });
 #pragma warning restore 612, 618
         }

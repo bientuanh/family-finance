@@ -92,6 +92,13 @@ export class MonthlyPlanningPageComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.hasExistingPlannedMonth(period.year, period.month)) {
+      this.submitErrorMessage = 'A monthly plan already exists for this month.';
+      this.statusMessage = 'A monthly plan already exists for this month.';
+      this.showActivityPopup('error', 'Tháng này đã có plan.');
+      return;
+    }
+
     if (this.defaultJars.length !== 7) {
       this.statusMessage = 'Default jars are not ready yet. Please try again.';
       return;
@@ -118,10 +125,9 @@ export class MonthlyPlanningPageComponent implements OnInit, OnDestroy {
         },
         error: (error: ApiClientError) => {
           if (error.code === 'MONTHLY_PLAN_ALREADY_EXISTS') {
-            this.submitErrorMessage = '';
-            this.statusMessage = 'A monthly plan already exists for this month. Opening that plan now.';
-            this.showActivityPopup('error', 'Tạo plan thất bại. Plan đã tồn tại.');
-            this.scheduleCreatePlanNavigation(period.year, period.month);
+            this.submitErrorMessage = 'A monthly plan already exists for this month.';
+            this.statusMessage = 'A monthly plan already exists for this month.';
+            this.showActivityPopup('error', 'Tháng này đã có plan.');
             return;
           }
 
@@ -306,6 +312,10 @@ export class MonthlyPlanningPageComponent implements OnInit, OnDestroy {
       window.clearTimeout(this.createPlanNavigationTimeoutId);
       this.createPlanNavigationTimeoutId = null;
     }
+  }
+
+  private hasExistingPlannedMonth(year: number, month: number): boolean {
+    return this.plannedMonths.some((plannedMonth) => plannedMonth.year === year && plannedMonth.month === month);
   }
 }
 

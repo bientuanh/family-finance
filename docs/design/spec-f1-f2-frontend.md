@@ -24,6 +24,7 @@ The authoritative backend contract is [spec-f1-f2-backend.md](spec-f1-f2-backend
 | Load plan/allocation | `GET /api/v1/budget-plans/{year}/{month}` | F1 post-create view and F2 allocation view |
 
 There is no separate F2 `/allocation` endpoint. F2 consumes the same `MonthlyPlanResponse` returned when F1 reads a plan. The frontend never submits jar types, rates, or calculated budgets.
+For plan-scoped APIs, frontend sends `X-User-Id` from authenticated session context.
 
 Money fields are digit-only strings representing whole VND. Keep them as strings and never convert them to JavaScript `number` values for financial calculations.
 
@@ -132,6 +133,7 @@ export interface ApiError {
 | `AllocationSummary` | Render period, monthly income, and seven returned allocations |
 | `JarAllocationItem` | Render name, percentage, and formatted backend budget |
 | `BudgetPlanApiService` | Own typed HTTP calls and error mapping |
+| `UserContextInterceptor` | Attach `X-User-Id` header when user session exists |
 
 No state-management framework is needed for this workflow. Do not hard-code a second frontend copy of rates or budgets.
 
@@ -150,6 +152,7 @@ Expected outcomes:
 - Planned months: `200 PlannedMonthsResponse`; retryable service error otherwise.
 - Delete planned month: `204 No Content`, `400 VALIDATION_ERROR`, or `404 MONTHLY_PLAN_NOT_FOUND`.
 - Defaults: `200 DefaultJarsResponse`; retryable service error otherwise.
+- Plan-scoped auth context missing/invalid: `401 AUTH_REQUIRED`.
 - Create: `201 MonthlyPlanResponse`, `400 VALIDATION_ERROR`, or `409 MONTHLY_PLAN_ALREADY_EXISTS`.
 - Read: `200 MonthlyPlanResponse`, `400 VALIDATION_ERROR`, `404 MONTHLY_PLAN_NOT_FOUND`, or `500 INTERNAL_ERROR`.
 

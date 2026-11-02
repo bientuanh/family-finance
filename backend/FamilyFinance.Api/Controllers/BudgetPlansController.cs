@@ -7,6 +7,7 @@ using FamilyFinance.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 
 namespace FamilyFinance.Api.Controllers;
 
@@ -20,7 +21,15 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PlannedMonthsResponse>> GetPlannedMonths()
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var plans = await db.BudgetPlans.AsNoTracking()
+            .Where(plan => plan.UserAccountId == userId)
             .OrderByDescending(plan => plan.Year)
             .ThenByDescending(plan => plan.Month)
             .Select(plan => new { plan.Year, plan.Month, plan.CreatedAtUtc })
@@ -39,19 +48,30 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BudgetPlanResponse>> Create(CreateBudgetPlanRequest request)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var errors = Validate(request, out var incomeVnd);
         if (errors.Count > 0)
         {
             return BadRequest(new ApiErrorResponse { Code = "VALIDATION_ERROR", Message = "One or more fields are invalid.", Errors = errors });
         }
 
-        if (await db.BudgetPlans.AnyAsync(plan => plan.Year == request.Year && plan.Month == request.Month))
+        if (await db.BudgetPlans.AnyAsync(plan =>
+                plan.UserAccountId == userId &&
+                plan.Year == request.Year &&
+                plan.Month == request.Month))
         {
             return Conflict(DuplicateResponse());
         }
 
         var plan = new BudgetPlan
         {
+            UserAccountId = userId,
             Year = request.Year,
             Month = request.Month,
             MonthlyIncomeVnd = incomeVnd,
@@ -80,6 +100,13 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpGet("{year:int}/{month:int}")]
     public async Task<ActionResult<BudgetPlanResponse>> GetByMonth(int year, int month)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var errors = ValidatePeriod(year, month);
         if (errors.Count > 0)
         {
@@ -87,7 +114,10 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
         }
 
         var plan = await db.BudgetPlans.Include(item => item.Allocations)
-            .SingleOrDefaultAsync(item => item.Year == year && item.Month == month);
+            .SingleOrDefaultAsync(item =>
+                item.UserAccountId == userId &&
+                item.Year == year &&
+                item.Month == month);
         return plan is null
             ? NotFound(new ApiErrorResponse { Code = "MONTHLY_PLAN_NOT_FOUND", Message = "No monthly plan exists for this month." })
             : Ok(Map(plan));
@@ -96,6 +126,13 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpDelete("{year:int}/{month:int}")]
     public async Task<ActionResult> DeleteByMonth(int year, int month)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var errors = ValidatePeriod(year, month);
         if (errors.Count > 0)
         {
@@ -103,7 +140,10 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
         }
 
         var plan = await db.BudgetPlans
-            .SingleOrDefaultAsync(item => item.Year == year && item.Month == month);
+            .SingleOrDefaultAsync(item =>
+                item.UserAccountId == userId &&
+                item.Year == year &&
+                item.Month == month);
         if (plan is null)
         {
             return NotFound(new ApiErrorResponse { Code = "MONTHLY_PLAN_NOT_FOUND", Message = "No monthly plan exists for this month." });
@@ -117,6 +157,13 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpGet("{year:int}/{month:int}/dashboard")]
     public async Task<ActionResult<MonthlyDashboardResponse>> GetMonthlyDashboard(int year, int month)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var errors = ValidatePeriod(year, month);
         if (errors.Count > 0)
         {
@@ -130,7 +177,10 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
 
         var plan = await db.BudgetPlans.AsNoTracking()
             .Include(item => item.Allocations)
-            .SingleOrDefaultAsync(item => item.Year == year && item.Month == month);
+            .SingleOrDefaultAsync(item =>
+                item.UserAccountId == userId &&
+                item.Year == year &&
+                item.Month == month);
         if (plan is null)
         {
             return NotFound(new ApiErrorResponse
@@ -198,6 +248,13 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpGet("{year:int}/{month:int}/spending-by-jars")]
     public async Task<ActionResult<SpendingByJarsResponse>> GetSpendingByJars(int year, int month)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var errors = ValidatePeriod(year, month);
         if (errors.Count > 0)
         {
@@ -211,7 +268,10 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
 
         var plan = await db.BudgetPlans.AsNoTracking()
             .Include(item => item.Allocations)
-            .SingleOrDefaultAsync(item => item.Year == year && item.Month == month);
+            .SingleOrDefaultAsync(item =>
+                item.UserAccountId == userId &&
+                item.Year == year &&
+                item.Month == month);
         if (plan is null)
         {
             return NotFound(new ApiErrorResponse
@@ -263,6 +323,13 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
     [HttpPost("expenses")]
     public async Task<ActionResult<CreateExpenseResponse>> CreateExpense(CreateExpenseRequest request)
     {
+        var authError = await TryResolveUserIdAsync();
+        if (authError.Error is not null)
+        {
+            return authError.Error;
+        }
+
+        var userId = authError.UserId!.Value;
         var requestErrors = ValidateExpenseRequest(request, out var expenseDate, out var amountVnd, out var jar);
         if (requestErrors.Count > 0)
         {
@@ -271,7 +338,10 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
 
         var selectedDate = expenseDate!.Value;
         var selectedJar = jar!;
-        var plan = await db.BudgetPlans.SingleOrDefaultAsync(item => item.Year == selectedDate.Year && item.Month == selectedDate.Month);
+        var plan = await db.BudgetPlans.SingleOrDefaultAsync(item =>
+            item.UserAccountId == userId &&
+            item.Year == selectedDate.Year &&
+            item.Month == selectedDate.Month);
         if (plan is null)
         {
             return NotFound(new ApiErrorResponse
@@ -408,6 +478,27 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
         Errors = errors
     };
 
+    private async Task<(int? UserId, ActionResult? Error)> TryResolveUserIdAsync()
+    {
+        if (!Request.Headers.TryGetValue("X-User-Id", out StringValues rawUserIds) || StringValues.IsNullOrEmpty(rawUserIds))
+        {
+            return (null, Unauthorized(AuthRequiredResponse()));
+        }
+
+        if (!int.TryParse(rawUserIds.ToString(), NumberStyles.None, CultureInfo.InvariantCulture, out var userId) || userId <= 0)
+        {
+            return (null, Unauthorized(AuthRequiredResponse()));
+        }
+
+        var userExists = await db.UserAccounts.AsNoTracking().AnyAsync(user => user.Id == userId);
+        if (!userExists)
+        {
+            return (null, Unauthorized(AuthRequiredResponse()));
+        }
+
+        return (userId, null);
+    }
+
     private static List<ApiFieldError> ValidatePeriod(int year, int month)
     {
         var errors = new List<ApiFieldError>();
@@ -461,6 +552,12 @@ public class BudgetPlansController(ApplicationDbContext db) : ControllerBase
         Code = "INTERNAL_ERROR",
         Message = "An unexpected error occurred.",
         Errors = []
+    };
+
+    private static ApiErrorResponse AuthRequiredResponse() => new()
+    {
+        Code = "AUTH_REQUIRED",
+        Message = "Sign in is required."
     };
 
     private static BudgetPlanResponse Map(BudgetPlan plan) => new()

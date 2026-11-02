@@ -35,6 +35,19 @@ export class FamilyFinanceHeaderComponent {
     void this.router.navigateByUrl(this.routeLinks.SIGN_IN);
   }
 
+  onBrandClick(event: MouseEvent): void {
+    event.preventDefault();
+    this.closeAccountMenu();
+
+    void this.router.navigateByUrl(this.routeLinks.LANDING).then(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        document.body.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (!this.isAccountMenuOpen()) {

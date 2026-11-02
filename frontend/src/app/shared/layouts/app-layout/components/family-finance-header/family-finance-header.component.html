@@ -1,5 +1,9 @@
 <header class="page-header">
-  <a [routerLink]="routeLinks.LANDING" aria-label="Family Finance planning" class="brand">
+  <a
+    [routerLink]="routeLinks.LANDING"
+    aria-label="Family Finance planning"
+    class="brand"
+    (click)="onBrandClick($event)">
     <app-home-logo></app-home-logo>
   </a>
 

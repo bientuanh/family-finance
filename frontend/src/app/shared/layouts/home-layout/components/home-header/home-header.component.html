@@ -1,8 +1,12 @@
 <header class="home-header">
   <div class="home-container home-header__inner">
-    <a [routerLink]="routeLinks.LANDING" class="home-header__brand" aria-label="Home">
+    <button
+      type="button"
+      class="home-header__brand home-header__brand-button"
+      aria-label="Home"
+      (click)="onHomeBrandClick()">
       <app-home-logo></app-home-logo>
-    </a>
+    </button>
 
     <nav class="home-header__nav" aria-label="Home sections">
       <a href="#features">Features</a>
@@ -10,6 +14,6 @@
       <a href="#about-me">About me</a>
     </nav>
 
-    <app-ui-button [routerLink]="startPlanningRouteLink()">Start planning</app-ui-button>
+    <app-ui-button [routerLink]="startPlanningRouteLink()">{{ ctaLabel() }}</app-ui-button>
   </div>
 </header>

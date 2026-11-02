@@ -5,6 +5,9 @@
 }
 
 .page-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   gap: var(--f1-sm);
@@ -120,7 +123,7 @@
 
 .shell {
   display: grid;
-  grid-template-columns: 14rem minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   min-height: calc(100vh - 4.25rem);
   align-items: stretch;
 }
@@ -129,7 +132,18 @@ app-family-finance-sidebar {
   display: block;
 }
 
+.sidebar-drawer {
+  position: fixed;
+  top: 4.25rem;
+  left: 0;
+  bottom: 0;
+  width: 14rem;
+  z-index: 20;
+}
+
 .sidebar {
+  height: 100%;
+  overflow-y: auto;
   background: var(--f1-surface);
   border-right: 0.0625rem solid var(--f1-grey);
   padding: 1rem 0.75rem;
@@ -163,6 +177,7 @@ app-family-finance-sidebar {
 }
 
 .page-main {
+  margin-left: 14rem;
   padding: 1.5rem;
 }
 
@@ -1396,6 +1411,7 @@ app-family-finance-sidebar {
   }
 
   .sidebar {
+    height: 100%;
     min-height: 100%;
     border-right: 0.0625rem solid var(--f1-grey);
     border-bottom: 0;
@@ -1406,6 +1422,10 @@ app-family-finance-sidebar {
 
   .content-grid {
     grid-template-columns: 1fr;
+  }
+
+  .page-main {
+    margin-left: 0;
   }
 
   .monthly-plan-header {

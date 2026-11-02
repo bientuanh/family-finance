@@ -45,6 +45,13 @@
   color: inherit;
 }
 
+.home-header__brand-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
 .home-header__nav {
   display: inline-flex;
   align-items: center;

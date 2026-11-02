@@ -1,15 +1,35 @@
 <section class="home-hero">
-  <div class="home-container home-hero__inner">
-    <app-ui-badge [text]="'Simple monthly planning for families'"></app-ui-badge>
-    <h1>Plan your money with confidence, one month at a time.</h1>
-    <p>
-      Create a monthly budget in seconds, keep your seven jars balanced, and make better
-      spending decisions with clear numbers.
-    </p>
+  <div class="home-container">
+    <div class="home-hero__inner">
+      <div class="home-hero__content">
+        <app-ui-badge [text]="'Simple monthly planning for families'"></app-ui-badge>
+        <h1>Plan your money with confidence, one month at a time.</h1>
+        <p>
+          Create a monthly budget in seconds, keep your seven jars balanced, and make better
+          spending decisions with clear numbers.
+        </p>
 
-    <div class="home-hero__actions">
-      <app-ui-button [routerLink]="planningRouteLink()">Create monthly plan</app-ui-button>
-      <app-ui-button [href]="'#features'" [variant]="'secondary'">View features</app-ui-button>
+        <div class="home-hero__actions">
+          <app-ui-button [routerLink]="planningRouteLink()">Create monthly plan</app-ui-button>
+          <app-ui-button [href]="'#features'" [variant]="'secondary'">View features</app-ui-button>
+        </div>
+      </div>
+
+      <div class="home-hero__image" aria-hidden="true">
+        <svg viewBox="0 0 420 300" fill="none">
+          <rect x="20" y="30" width="380" height="240" rx="20" fill="#ffffff" stroke="#d3deec" stroke-width="2"></rect>
+          <rect x="52" y="64" width="170" height="24" rx="8" fill="#eef3fb"></rect>
+          <rect x="52" y="102" width="316" height="12" rx="6" fill="#eef3fb"></rect>
+          <rect x="52" y="122" width="280" height="12" rx="6" fill="#eef3fb"></rect>
+          <rect x="52" y="160" width="92" height="84" rx="12" fill="#f7f2ff"></rect>
+          <rect x="160" y="160" width="92" height="84" rx="12" fill="#eef8ff"></rect>
+          <rect x="268" y="160" width="100" height="84" rx="12" fill="#fff5f4"></rect>
+          <path d="M76 213 96 194l18 14 22-24" stroke="#2f6fe0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M183 214v-28M206 214v-44M229 214v-20" stroke="#00a077" stroke-width="7" stroke-linecap="round"></path>
+          <circle cx="318" cy="200" r="20" fill="#f26f5b"></circle>
+          <path d="M318 188v12l9 8" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
     </div>
   </div>
 </section>

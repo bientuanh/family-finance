@@ -4,6 +4,7 @@ import { FaqSectionComponent } from '../../sections/faq-section/faq-section.comp
 import { FeaturesSectionComponent } from '../../sections/features-section/features-section.component';
 import { HeroBannerSectionComponent } from '../../sections/hero-banner-section/hero-banner-section.component';
 import { HomeLayoutComponent } from '../../../../shared/layouts/home-layout/home-layout.component';
+import { CalloutSectionComponent } from '../../sections/callout-section/callout-section.component';
 
 @Component({
   selector: 'app-home-page',
@@ -11,6 +12,7 @@ import { HomeLayoutComponent } from '../../../../shared/layouts/home-layout/home
     HomeLayoutComponent,
     HeroBannerSectionComponent,
     FeaturesSectionComponent,
+    CalloutSectionComponent,
     FaqSectionComponent,
     AboutMeSectionComponent
   ],

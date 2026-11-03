@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { AUTH_ENDPOINTS, BUDGET_PLAN_ENDPOINTS } from './api-endpoints';
+import { AUTH_ENDPOINTS, BUDGET_PLAN_ENDPOINTS } from '../../../app/constants/api-endpoints';
 
 describe('BUDGET_PLAN_ENDPOINTS', () => {
   it('builds budget plan API paths', () => {

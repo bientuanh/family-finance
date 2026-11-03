@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { APP_ROUTE_PATHS } from './constants/app-routes';
-import { routes } from './app.routes';
+import { APP_ROUTE_PATHS } from '../../app/constants/app-routes';
+import { routes } from '../../app/app.routes';
 
 describe('routes', () => {
   it('defines the application navigation routes', () => {

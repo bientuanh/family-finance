@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { appConfig } from './app.config';
+import { appConfig } from '../../app/app.config';
 
 describe('appConfig', () => {
   it('registers application providers', () => {
